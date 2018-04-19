@@ -2,6 +2,7 @@
   * 15.0.0.0
     * This version of the adapters has been certified with AdMob 15.0.0.
 	* Implement AdMob's onRewardedVideoCompleted() callback. 
+    * [Known Issue] AdMob's native ads are occasionally removed from the view hierarchy when a ListView/RecyclerView is scrolled.
 
   * 11.8.0.0
     * This version of the adapters has been certified with AdMob 11.8.0.
