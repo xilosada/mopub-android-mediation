@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.applovin.adview.AppLovinAdView;
+import com.applovin.adview.AppLovinAdViewDisplayErrorCode;
 import com.applovin.adview.AppLovinAdViewEventListener;
 import com.applovin.sdk.AppLovinAd;
 import com.applovin.sdk.AppLovinAdClickListener;
@@ -18,9 +19,6 @@ import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkSettings;
 import com.mopub.common.logging.MoPubLog;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Map;
 
 public class AppLovinBanner extends CustomEventBanner {
@@ -56,7 +54,7 @@ public class AppLovinBanner extends CustomEventBanner {
         final AppLovinAdSize adSize = appLovinAdSizeFromLocalExtras(localExtras);
         if (adSize != null) {
             sdk = retrieveSdk(serverExtras, context);
-            sdk.setPluginVersion("MoPub-Certified-2.2.1");
+            sdk.setPluginVersion("MoPub-Certified-2.2.2");
 
             final AppLovinAdView adView = new AppLovinAdView(sdk, adSize, context);
             adView.setAdDisplayListener(new AppLovinAdDisplayListener() {
@@ -78,10 +76,31 @@ public class AppLovinBanner extends CustomEventBanner {
                 }
             });
 
-            // As of Android SDK >= 7.3.0, we added a listener for banner events
-            if (AppLovinSdk.VERSION_CODE >= 730) {
-                adView.setAdViewEventListener((AppLovinAdViewEventListener) AppLovinAdViewEventListenerProxy.newInstance(customEventBannerListener));
-            }
+
+            adView.setAdViewEventListener( new AppLovinAdViewEventListener() {
+                @Override
+                public void adOpenedFullscreen(final AppLovinAd appLovinAd, final AppLovinAdView appLovinAdView)
+                {
+                    MoPubLog.d("Banner opened fullscreen");
+                    customEventBannerListener.onBannerExpanded();
+                }
+
+                @Override
+                public void adClosedFullscreen(final AppLovinAd appLovinAd, final AppLovinAdView appLovinAdView)
+                {
+                    MoPubLog.d("Banner closed fullscreen");
+                    customEventBannerListener.onBannerCollapsed();
+                }
+
+                @Override
+                public void adLeftApplication(final AppLovinAd appLovinAd, final AppLovinAdView appLovinAdView)
+                {
+                    MoPubLog.d("Banner left application");
+                }
+
+                @Override
+                public void adFailedToDisplay(final AppLovinAd appLovinAd, final AppLovinAdView appLovinAdView, final AppLovinAdViewDisplayErrorCode appLovinAdViewDisplayErrorCode) {}
+            } );
 
             final AppLovinAdLoadListener adLoadListener = new AppLovinAdLoadListener() {
                 @Override
@@ -130,7 +149,7 @@ public class AppLovinBanner extends CustomEventBanner {
             }
 
             if (!TextUtils.isEmpty(zoneId)) {
-                loadNextAd(zoneId, adLoadListener, customEventBannerListener);
+                sdk.getAdService().loadNextAdForZoneId( zoneId, adLoadListener );
             } else {
                 sdk.getAdService().loadNextAd(adSize, adLoadListener);
             }
@@ -206,39 +225,6 @@ public class AppLovinBanner extends CustomEventBanner {
     }
 
     /**
-     * Dynamic proxy class for AppLovin's AppLovinAdViewEventListener. Used to keep compilation compatibility if publisher is on a version of the SDK before the listener was introduced (< 7.3.0).
-     */
-    private static final class AppLovinAdViewEventListenerProxy
-            implements InvocationHandler {
-        private final CustomEventBannerListener customEventBannerListener;
-
-        private static Object newInstance(final CustomEventBannerListener customEventBannerListener) {
-            return Proxy.newProxyInstance(AppLovinAdViewEventListener.class.getClassLoader(),
-                    new Class[]{AppLovinAdViewEventListener.class},
-                    new AppLovinAdViewEventListenerProxy(customEventBannerListener));
-        }
-
-        private AppLovinAdViewEventListenerProxy(final CustomEventBannerListener customEventBannerListener) {
-            this.customEventBannerListener = customEventBannerListener;
-        }
-
-        public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            final String methodName = method.getName();
-
-            if ("adOpenedFullscreen".equals(methodName)) {
-                MoPubLog.d("Banner opened fullscreen");
-                customEventBannerListener.onBannerExpanded();
-            } else if ("adClosedFullscreen".equals(methodName)) {
-                MoPubLog.d("Banner closed fullscreen");
-                customEventBannerListener.onBannerCollapsed();
-            } else if ("adLeftApplication".equals(methodName)) {
-                MoPubLog.d("Banner left application");
-            }
-            return null;
-        }
-    }
-
-    /**
      * Retrieves the appropriate instance of AppLovin's SDK from the SDK key given in the server parameters, or Android Manifest.
      */
     private static AppLovinSdk retrieveSdk(final Map<String, String> serverExtras, final Context context) {
@@ -251,17 +237,6 @@ public class AppLovinBanner extends CustomEventBanner {
             sdk = AppLovinSdk.getInstance(context);
         }
         return sdk;
-    }
-
-    private void loadNextAd(final String zoneId, final AppLovinAdLoadListener adLoadListener, final CustomEventBannerListener customEventBannerListener) {
-        // Dynamically load an ad for a given zone without breaking backwards compatibility for publishers on older SDKs
-        try {
-            final Method method = sdk.getAdService().getClass().getMethod("loadNextAdForZoneId", String.class, AppLovinAdLoadListener.class);
-            method.invoke(sdk.getAdService(), zoneId, adLoadListener);
-        } catch (Throwable th) {
-            MoPubLog.d("Unable to load ad for zone: " + zoneId + "...");
-            customEventBannerListener.onBannerFailed(MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
-        }
     }
 
     /**
