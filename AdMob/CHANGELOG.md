@@ -1,4 +1,7 @@
 ## Changelog
+  * 15.0.0.1
+    * Removed an extra class from the JCenter jar. The adapter binaries on this GitHub repository are not affected.
+
   * 15.0.0.0
     * This version of the adapters has been certified with AdMob 15.0.0.
 	* Implement AdMob's onRewardedVideoCompleted() callback. 
