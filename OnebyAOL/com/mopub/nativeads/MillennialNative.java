@@ -12,13 +12,18 @@ import com.millennialmedia.MMLog;
 import com.millennialmedia.MMSDK;
 import com.millennialmedia.NativeAd;
 import com.millennialmedia.internal.ActivityListenerManager;
+import com.mopub.common.MoPub;
 import com.mopub.common.logging.MoPubLog;
+import com.mopub.common.privacy.ConsentStatus;
+import com.mopub.common.privacy.PersonalInfoManager;
 import com.mopub.mobileads.MillennialUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.millennialmedia.MMSDK.setConsentData;
+import static com.millennialmedia.MMSDK.setConsentRequired;
 import static com.mopub.nativeads.NativeImageHelper.preCacheImages;
 
 public class MillennialNative extends CustomEventNative {
@@ -46,6 +51,20 @@ public class MillennialNative extends CustomEventNative {
         if (context instanceof Activity) {
             try {
                 MMSDK.initialize((Activity) context, ActivityListenerManager.LifecycleState.RESUMED);
+
+                PersonalInfoManager personalInfoManager = MoPub.getPersonalInformationManager();
+
+                if (personalInfoManager != null) {
+                    boolean gdprApplies = personalInfoManager.gdprApplies();
+
+                    // Set if GDPR applies / if consent is required
+                    setConsentRequired(gdprApplies);
+
+                    // Pass the user consent from the MoPub SDK to One by AOL as per GDPR
+                    if (personalInfoManager.getPersonalInfoConsentStatus() == ConsentStatus.EXPLICIT_YES) {
+                        setConsentData("mopub", "1");
+                    }
+                }
             } catch (IllegalStateException e) {
                 MoPubLog.d("Exception occurred initializing the MM SDK.", e);
                 customEventNativeListener.onNativeAdFailed(NativeErrorCode.NATIVE_ADAPTER_CONFIGURATION_ERROR);
