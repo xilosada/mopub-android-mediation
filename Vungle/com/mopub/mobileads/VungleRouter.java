@@ -56,7 +56,6 @@ public class VungleRouter {
         }
     };
 
-
     private VungleRouter() {
         VungleApiClient.addWrapperInfo(VungleApiClient.WrapperFramework.mopub,
                 VERSION.replace('.', '_'));
@@ -70,12 +69,7 @@ public class VungleRouter {
         return sLifecycleListener;
     }
 
-
     public void initVungle(Context context, String vungleAppId, String[] placementReferenceIds) {
-
-        // Pass the user consent from the MoPub SDK to Vungle as per GDPR
-        boolean canCollectPersonalInfo = MoPub.canCollectPersonalInformation();
-        Vungle.updateConsentStatus(canCollectPersonalInfo ? Vungle.Consent.OPTED_IN : Vungle.Consent.OPTED_OUT);
 
         Vungle.init(Arrays.asList(placementReferenceIds), vungleAppId, context.getApplicationContext(), new InitCallback() {
             @Override
@@ -85,6 +79,10 @@ public class VungleRouter {
                 sInitState = SDKInitState.INITIALIZED;
 
                 clearWaitingList();
+
+                // Pass the user consent from the MoPub SDK to Vungle as per GDPR
+                boolean canCollectPersonalInfo = MoPub.canCollectPersonalInformation();
+                Vungle.updateConsentStatus(canCollectPersonalInfo ? Vungle.Consent.OPTED_IN : Vungle.Consent.OPTED_OUT);
             }
 
             @Override
