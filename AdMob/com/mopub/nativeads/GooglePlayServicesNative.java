@@ -1,11 +1,13 @@
 package com.mopub.nativeads;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -425,7 +427,23 @@ public class GooglePlayServicesNative extends CustomEventNative {
                             }
                         }
                     }).withNativeAdOptions(adOptions).build();
-            adLoader.loadAd(new AdRequest.Builder().setRequestAgent("MoPub").build());
+            adLoader.loadAd(new AdRequest.Builder()
+                    .setRequestAgent("MoPub")
+                    // Consent collected from the MoPub’s consent dialogue should not be used to set up
+                    // Google's personalization preference. Publishers should work with Google to be GDPR-compliant.
+                    .addNetworkExtrasBundle(AdMobAdapter.class, getGooglePersonalizationPreference(localExtras))
+                    .build());
+        }
+
+        private Bundle getGooglePersonalizationPreference(Map<String, Object> localExtras) {
+            Bundle extras = new Bundle();
+            if (localExtras.get("npa") != null) {
+                String personalizationPref = localExtras.get("npa").toString();
+                if (!TextUtils.isEmpty(personalizationPref)) {
+                    extras.putString("npa", personalizationPref);
+                }
+            }
+            return extras;
         }
 
         /**
