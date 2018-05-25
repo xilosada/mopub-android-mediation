@@ -1,6 +1,9 @@
 ## Changelog
+  * 15.0.0.5
+    * Append user's ad personalization preference via MoPub's GlobalMediationSettings to AdMob's ad requests.
+
   * 15.0.0.4
-    * Append user's ad personalization preference from `localExtras` to AdMob's ad requests.
+    * Append user's ad personalization preference from `localExtras` to AdMob's ad requests. [Deprecated]
 
   * 15.0.0.3
     * Forced AdMob's rewarded video's `isLoaded()` check to run on the main thread (in light of multithreading crashes when mediating AdMob on Unity).
