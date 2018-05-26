@@ -89,12 +89,11 @@ public class GooglePlayServicesBanner extends CustomEventBanner {
     }
 
     private void forwardNpaIfSet(AdRequest.Builder builder) {
-        final GooglePlayServicesMediationSettings globalMediationSettings =
-                MoPubRewardedVideoManager.getGlobalMediationSettings(GooglePlayServicesMediationSettings.class);
 
         // Only forward the "npa" bundle if it is explicitly set. Otherwise, don't attach it with the ad request.
-        if (globalMediationSettings != null && globalMediationSettings.getNpaBundle() != null) {
-            builder.addNetworkExtrasBundle(AdMobAdapter.class, globalMediationSettings.getNpaBundle());
+        if (GooglePlayServicesMediationSettings.getNpaBundle() != null &&
+                !GooglePlayServicesMediationSettings.getNpaBundle().isEmpty()) {
+            builder.addNetworkExtrasBundle(AdMobAdapter.class, GooglePlayServicesMediationSettings.getNpaBundle());
         }
     }
 
@@ -192,20 +191,20 @@ public class GooglePlayServicesBanner extends CustomEventBanner {
     }
 
     public static final class GooglePlayServicesMediationSettings implements MediationSettings {
-        private Bundle npaBundle;
+        private static Bundle npaBundle;
 
         public GooglePlayServicesMediationSettings() {
         }
 
         public GooglePlayServicesMediationSettings(Bundle bundle) {
-            this.npaBundle = bundle;
+            npaBundle = bundle;
         }
 
         public void setNpaBundle(Bundle bundle) {
-            this.npaBundle = bundle;
+            npaBundle = bundle;
         }
 
-        private Bundle getNpaBundle() {
+        private static Bundle getNpaBundle() {
             return npaBundle;
         }
     }
