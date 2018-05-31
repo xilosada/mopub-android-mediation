@@ -1,4 +1,6 @@
 ## Changelog
+  * 15.0.0.8
+    * Really fix the AdMob `isLoaded()` crash (15.0.0.3).
 
   * 15.0.0.7
     * Improve 15.0.0.5 to no longer call out to MoPub's rewarded video APIs to store and process the `npa` value.

@@ -204,6 +204,10 @@ public class GooglePlayServicesBanner extends CustomEventBanner {
             npaBundle = bundle;
         }
 
+        /* The MoPub Android SDK queries MediationSettings from the rewarded video code
+        (MoPubRewardedVideoManager.getGlobalMediationSettings). That API might not always be
+        available to publishers importing the modularized SDK(s) based on select ad formats.
+        This is a workaround to statically get the "npa" Bundle passed to us via the constructor. */
         private static Bundle getNpaBundle() {
             return npaBundle;
         }
