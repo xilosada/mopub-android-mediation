@@ -10,11 +10,11 @@ import com.ironsource.mediationsdk.IronSource;
 import com.ironsource.mediationsdk.logger.IronSourceError;
 import com.ironsource.mediationsdk.model.Placement;
 import com.ironsource.mediationsdk.sdk.ISDemandOnlyRewardedVideoListener;
+import com.mopub.common.BaseLifecycleListener;
 import com.mopub.common.LifecycleListener;
 import com.mopub.common.MoPub;
 import com.mopub.common.MoPubReward;
 import com.mopub.common.logging.MoPubLog;
-import com.mopub.common.privacy.PersonalInfoManager;
 
 import java.util.Map;
 
@@ -37,6 +37,8 @@ public class IronSourceRewardedVideo extends CustomEventRewardedVideo implements
     private static final String PLACEMENT_KEY = "placementName";
     private static final String INSTANCE_ID_KEY = "instanceId";
     private static final String MEDIATION_TYPE = "mopub";
+    private static final String ADAPTER_VERSION = "300";
+
 
     // This is the instance id used inside ironSource SDK
     private String mInstanceId = "0";
@@ -52,8 +54,22 @@ public class IronSourceRewardedVideo extends CustomEventRewardedVideo implements
     @Nullable
     @Override
     protected LifecycleListener getLifecycleListener() {
-        return null;
+        return mLifecycleListener;
     }
+
+    private LifecycleListener mLifecycleListener = new BaseLifecycleListener() {
+        @Override
+        public void onPause(@NonNull Activity activity) {
+            super.onPause(activity);
+            IronSource.onPause(activity);
+        }
+
+        @Override
+        public void onResume(@NonNull Activity activity) {
+            super.onResume(activity);
+            IronSource.onResume(activity);
+        }
+    };
 
     @Override
     protected void onInvalidate() {
@@ -132,17 +148,6 @@ public class IronSourceRewardedVideo extends CustomEventRewardedVideo implements
     }
 
     /**
-     * Activity Lifecycle Helper Methods
-     **/
-    public static void onActivityPaused(Activity activity) {
-        IronSource.onPause(activity);
-    }
-
-    public static void onActivityResumed(Activity activity) {
-        IronSource.onResume(activity);
-    }
-
-    /**
      * Class Helper Methods
      **/
     private void initIronSourceSDK(Activity activity, String appKey) {
@@ -152,7 +157,7 @@ public class IronSourceRewardedVideo extends CustomEventRewardedVideo implements
 
             if (mIsFirstInitFlow) {
                 MoPubLog.d("IronSource initialization succeeded for RewardedVideo");
-                IronSource.setMediationType(MEDIATION_TYPE);
+                IronSource.setMediationType(MEDIATION_TYPE + ADAPTER_VERSION);
                 IronSource.initISDemandOnly(activity, appKey, IronSource.AD_UNIT.REWARDED_VIDEO);
             }
         } else {
