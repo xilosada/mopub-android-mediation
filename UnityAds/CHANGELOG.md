@@ -1,4 +1,7 @@
 ## Changelog
+  * 2.2.1.2
+    * Pass explicit consent to Unity Ads (with revision).
+
   * 2.2.1.1
     * Pass explicit consent to Unity Ads.
 
