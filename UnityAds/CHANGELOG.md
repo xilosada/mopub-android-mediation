@@ -1,6 +1,6 @@
 ## Changelog
   * 2.2.1.2
-    * Update to share consent with Unity Ads only when user provides an explicit yes/no. In all other cases, Unity Ads SDK will collect its own consent per the guidelines [here][https://unity3d.com/legal/gdpr]
+    * Update to share consent with Unity Ads only when user provides an explicit yes/no. In all other cases, Unity Ads SDK will collect its own consent per the guidelines published in https://unity3d.com/legal/gdpr
 
   * 2.2.1.1
     * Pass explicit consent to Unity Ads.
