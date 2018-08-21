@@ -1,4 +1,8 @@
 ## Changelog
+  * 6.7.10.2
+    * Update the instance ID returned in the `getAdNetworkId` API (used to generate server-side rewarded video callback URL) to be non-null, and avoid potential NullPointerExceptions.
+
+
   * 6.7.10.1
     * This version of the adapters has been certified with IronSource 6.7.10
 
