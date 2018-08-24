@@ -1,4 +1,8 @@
 ## Changelog
+  * 6.8.1.4
+    * Align MoPub's interstitial impression tracking to that of One by AOL. 
+        * `setAutomaticImpressionAndClickTracking` is set to `false`, and AOL's `onShown` callback is leveraged to fire MoPub impressions. This change requires MoPub 5.3.0 or higher.
+
   * 6.8.1.3
     * Update the placement ID returned in the `getAdNetworkId` API (used to generate server-side rewarded video callback URL) to be non-null, and avoid potential NullPointerExceptions.
 
