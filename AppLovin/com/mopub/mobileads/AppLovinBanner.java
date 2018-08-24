@@ -20,7 +20,6 @@ import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkSettings;
 import com.mopub.common.MoPub;
 import com.mopub.common.logging.MoPubLog;
-import com.mopub.common.privacy.PersonalInfoManager;
 
 import java.util.Map;
 
@@ -45,6 +44,8 @@ public class AppLovinBanner extends CustomEventBanner {
     @Override
     protected void loadBanner(final Context context, final CustomEventBannerListener customEventBannerListener, final Map<String, Object> localExtras, final Map<String, String> serverExtras) {
 
+        setAutomaticImpressionAndClickTracking(false);
+
         // Pass the user consent from the MoPub SDK to AppLovin as per GDPR
         boolean canCollectPersonalInfo = MoPub.canCollectPersonalInformation();
         AppLovinPrivacySettings.setHasUserConsent(canCollectPersonalInfo, context);
@@ -52,7 +53,10 @@ public class AppLovinBanner extends CustomEventBanner {
         // SDK versions BELOW 7.1.0 require a instance of an Activity to be passed in as the context
         if (AppLovinSdk.VERSION_CODE < 710 && !(context instanceof Activity)) {
             MoPubLog.d("Unable to request AppLovin banner. Invalid context provided.");
-            customEventBannerListener.onBannerFailed(MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
+
+            if (customEventBannerListener != null) {
+                customEventBannerListener.onBannerFailed(MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
+            }
 
             return;
         }
@@ -69,6 +73,10 @@ public class AppLovinBanner extends CustomEventBanner {
                 @Override
                 public void adDisplayed(final AppLovinAd ad) {
                     MoPubLog.d("Banner displayed");
+
+                    if (customEventBannerListener != null) {
+                        customEventBannerListener.onBannerImpression();
+                    }
                 }
 
                 @Override
@@ -80,7 +88,10 @@ public class AppLovinBanner extends CustomEventBanner {
                 @Override
                 public void adClicked(final AppLovinAd ad) {
                     MoPubLog.d("Banner clicked");
-                    customEventBannerListener.onBannerClicked();
+
+                    if (customEventBannerListener != null) {
+                        customEventBannerListener.onBannerClicked();
+                    }
                 }
             });
 
@@ -89,13 +100,19 @@ public class AppLovinBanner extends CustomEventBanner {
                 @Override
                 public void adOpenedFullscreen(final AppLovinAd appLovinAd, final AppLovinAdView appLovinAdView) {
                     MoPubLog.d("Banner opened fullscreen");
-                    customEventBannerListener.onBannerExpanded();
+
+                    if (customEventBannerListener != null) {
+                        customEventBannerListener.onBannerExpanded();
+                    }
                 }
 
                 @Override
                 public void adClosedFullscreen(final AppLovinAd appLovinAd, final AppLovinAdView appLovinAdView) {
                     MoPubLog.d("Banner closed fullscreen");
-                    customEventBannerListener.onBannerCollapsed();
+
+                    if (customEventBannerListener != null) {
+                        customEventBannerListener.onBannerCollapsed();
+                    }
                 }
 
                 @Override
@@ -120,7 +137,9 @@ public class AppLovinBanner extends CustomEventBanner {
                             MoPubLog.d("Successfully loaded banner ad");
 
                             try {
-                                customEventBannerListener.onBannerLoaded(adView);
+                                if (customEventBannerListener != null) {
+                                    customEventBannerListener.onBannerLoaded(adView);
+                                }
                             } catch (Throwable th) {
                                 MoPubLog.e("Unable to notify listener of successful ad load.", th);
                             }
@@ -137,7 +156,9 @@ public class AppLovinBanner extends CustomEventBanner {
                             MoPubLog.d("Failed to load banner ad with code: " + errorCode);
 
                             try {
-                                customEventBannerListener.onBannerFailed(toMoPubErrorCode(errorCode));
+                                if (customEventBannerListener != null) {
+                                    customEventBannerListener.onBannerFailed(toMoPubErrorCode(errorCode));
+                                }
                             } catch (Throwable th) {
                                 MoPubLog.e("Unable to notify listener of failure to receive ad.", th);
                             }
@@ -162,7 +183,9 @@ public class AppLovinBanner extends CustomEventBanner {
         } else {
             MoPubLog.d("Unable to request AppLovin banner");
 
-            customEventBannerListener.onBannerFailed(MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
+            if (customEventBannerListener != null) {
+                customEventBannerListener.onBannerFailed(MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
+            }
         }
     }
 
