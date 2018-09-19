@@ -36,11 +36,7 @@ import static android.util.Log.ERROR;
  * <p>
  * Created by Thomas So on 5/27/17.
  */
-
-//
-// PLEASE NOTE: We have renamed this class from "YOUR_PACKAGE_NAME.AppLovinRewardedAdapter" to "YOUR_PACKAGE_NAME.AppLovinCustomEventRewardedVideo", you can use either classname in your MoPub account.
-//
-public class AppLovinCustomEventRewardedVideo
+public class AppLovinRewardedVideo
         extends CustomEventRewardedVideo
         implements AppLovinAdLoadListener, AppLovinAdDisplayListener, AppLovinAdClickListener, AppLovinAdVideoPlaybackListener, AppLovinAdRewardListener
 {
@@ -216,7 +212,7 @@ public class AppLovinCustomEventRewardedVideo
             {
                 try
                 {
-                    MoPubRewardedVideoManager.onRewardedVideoLoadSuccess( AppLovinCustomEventRewardedVideo.this.getClass(), "" );
+                    MoPubRewardedVideoManager.onRewardedVideoLoadSuccess( AppLovinRewardedVideo.this.getClass(), "" );
                 }
                 catch ( Throwable th )
                 {
@@ -238,7 +234,7 @@ public class AppLovinCustomEventRewardedVideo
             {
                 try
                 {
-                    MoPubRewardedVideoManager.onRewardedVideoLoadFailure( AppLovinCustomEventRewardedVideo.this.getClass(), "", toMoPubErrorCode( errorCode ) );
+                    MoPubRewardedVideoManager.onRewardedVideoLoadFailure( AppLovinRewardedVideo.this.getClass(), "", toMoPubErrorCode( errorCode ) );
                 }
                 catch ( Throwable th )
                 {
