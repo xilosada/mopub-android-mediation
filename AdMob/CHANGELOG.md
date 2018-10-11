@@ -1,4 +1,7 @@
 ## Changelog
+  * 17.0.0.1
+    * Fix a bug where AdMob's native ads disappear when scrolling through a ListView/RecyclerView.
+
   * 17.0.0.0
     * This version of the adapters has been certified with AdMob 17.0.0.
 

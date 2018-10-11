@@ -100,7 +100,6 @@ public class GooglePlayServicesAdRenderer implements MoPubAdRenderer<GooglePlayS
             viewHolder = GoogleStaticNativeViewHolder.fromViewBinder(view, mViewBinder);
             mViewHolderMap.put(view, viewHolder);
         }
-        removeGoogleUnifiedAdView(view, nativeAd.shouldSwapMargins());
 
         UnifiedNativeAdView unifiedAdView = new UnifiedNativeAdView(view.getContext());
 
