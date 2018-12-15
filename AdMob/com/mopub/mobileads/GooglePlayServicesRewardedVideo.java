@@ -182,6 +182,13 @@ public class GooglePlayServicesRewardedVideo extends CustomEventRewardedVideo im
                     AdRequest.Builder builder = new AdRequest.Builder();
                     builder.setRequestAgent("MoPub");
 
+                    /* Publishers may append a content URL by passing it to the GooglePlayServicesMediationSettings
+                    instance when initializing the MoPub SDK: https://developers.mopub.com/docs/mediation/networks/google/#android */
+                    String contentUrl = GooglePlayServicesMediationSettings.getContentUrl();
+                    if (!TextUtils.isEmpty(contentUrl)) {
+                        builder.setContentUrl(contentUrl);
+                    }
+
                     // Consent collected from the MoPub’s consent dialogue should not be used to set up
                     // Google's personalization preference. Publishers should work with Google to be GDPR-compliant.
                     forwardNpaIfSet(builder);
@@ -304,6 +311,7 @@ public class GooglePlayServicesRewardedVideo extends CustomEventRewardedVideo im
 
     public static final class GooglePlayServicesMediationSettings implements MediationSettings {
         private static Bundle npaBundle;
+        private static String contentUrl;
 
         public GooglePlayServicesMediationSettings() {
         }
@@ -312,8 +320,17 @@ public class GooglePlayServicesRewardedVideo extends CustomEventRewardedVideo im
             npaBundle = bundle;
         }
 
+        public GooglePlayServicesMediationSettings(Bundle bundle, String url) {
+            npaBundle = bundle;
+            contentUrl = url;
+        }
+
         public void setNpaBundle(Bundle bundle) {
             npaBundle = bundle;
+        }
+
+        public void setContentUrl(String url) {
+            contentUrl = url;
         }
 
         /* The MoPub Android SDK queries MediationSettings from the rewarded video code
@@ -322,6 +339,10 @@ public class GooglePlayServicesRewardedVideo extends CustomEventRewardedVideo im
         This is a workaround to statically get the "npa" Bundle passed to us via the constructor. */
         private static Bundle getNpaBundle() {
             return npaBundle;
+        }
+
+        private static String getContentUrl() {
+            return contentUrl;
         }
     }
 }
