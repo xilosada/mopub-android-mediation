@@ -1,4 +1,6 @@
 ## Changelog
+  * 5.1.0.2
+    * Fix an ANR when getting the bidding token by calling Facebook's `BidderTokenProvider.getBidderToken()` from a background thread.
 
   * 5.1.0.0
     * This version of the adapters has been certified with Facebook Audience Network 5.1.0
