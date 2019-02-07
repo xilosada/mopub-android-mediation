@@ -19,7 +19,7 @@ import static com.mopub.common.logging.MoPubLog.AdapterLogEvent.CUSTOM_WITH_THRO
 
 public class FacebookAdapterConfiguration extends BaseAdapterConfiguration {
 
-    private static final String ADAPTER_VERSION = "5.1.0.1";
+    private static final String ADAPTER_VERSION = "5.1.0.2";
     private static final String MOPUB_NETWORK_NAME = "facebook";
     private AtomicBoolean networkInitializationSucceeded = new AtomicBoolean(false);
     private AtomicReference<String> tokenReference = new AtomicReference<>(null);
@@ -35,6 +35,7 @@ public class FacebookAdapterConfiguration extends BaseAdapterConfiguration {
     @Override
     public String getBiddingToken(@NonNull final Context context) {
         Preconditions.checkNotNull(context);
+
         refreshBidderToken(context);
         return networkInitializationSucceeded.get() ? tokenReference.get() : null;
     }
@@ -68,16 +69,16 @@ public class FacebookAdapterConfiguration extends BaseAdapterConfiguration {
                 networkInitializationSucceeded.set(true);
             } catch (Exception e) {
                 MoPubLog.log(CUSTOM_WITH_THROWABLE, "Initializing Facebook Audience Network" +
-                    " has encountered an exception.", e);
+                        " has encountered an exception.", e);
             }
         }
 
         if (networkInitializationSucceeded.get()) {
             listener.onNetworkInitializationFinished(this.getClass(),
-                MoPubErrorCode.ADAPTER_INITIALIZATION_SUCCESS);
+                    MoPubErrorCode.ADAPTER_INITIALIZATION_SUCCESS);
         } else {
             listener.onNetworkInitializationFinished(this.getClass(),
-                MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
+                    MoPubErrorCode.ADAPTER_CONFIGURATION_ERROR);
         }
     }
 
