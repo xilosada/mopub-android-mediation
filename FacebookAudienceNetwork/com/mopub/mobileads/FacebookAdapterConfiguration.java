@@ -19,7 +19,7 @@ import static com.mopub.common.logging.MoPubLog.AdapterLogEvent.CUSTOM_WITH_THRO
 
 public class FacebookAdapterConfiguration extends BaseAdapterConfiguration {
 
-    private static final String ADAPTER_VERSION = "5.1.0.2";
+    private static final String ADAPTER_VERSION = "5.2.0.0";
     private static final String MOPUB_NETWORK_NAME = "facebook";
     private AtomicBoolean networkInitializationSucceeded = new AtomicBoolean(false);
     private AtomicReference<String> tokenReference = new AtomicReference<>(null);
@@ -60,7 +60,6 @@ public class FacebookAdapterConfiguration extends BaseAdapterConfiguration {
 
         Preconditions.checkNotNull(context);
         Preconditions.checkNotNull(listener);
-
 
         synchronized (FacebookAdapterConfiguration.class) {
             try {

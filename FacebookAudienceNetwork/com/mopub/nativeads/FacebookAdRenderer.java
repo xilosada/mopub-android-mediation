@@ -10,9 +10,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.ads.AdChoicesView;
 import com.facebook.ads.AdIconView;
+import com.facebook.ads.AdOptionsView;
 import com.facebook.ads.MediaView;
+import com.facebook.ads.NativeAdLayout;
 import com.mopub.common.Preconditions;
 
 import java.util.Collections;
@@ -87,9 +88,16 @@ public class FacebookAdRenderer implements MoPubAdRenderer<FacebookNative.Facebo
                 facebookNativeViewHolder.getMediaView(), facebookNativeViewHolder.getAdIconView());
         if (adChoicesContainer != null) {
             adChoicesContainer.removeAllViews();
-            final AdChoicesView adChoicesView = new AdChoicesView(adChoicesContainer.getContext(),
-                    nativeAd.getFacebookNativeAd(), true);
-            ViewGroup.LayoutParams layoutParams = adChoicesView.getLayoutParams();
+            NativeAdLayout nativeAdLayout = null;
+            if (facebookNativeViewHolder.mainView instanceof NativeAdLayout) {
+                nativeAdLayout = (NativeAdLayout) facebookNativeViewHolder.mainView;
+            }
+            final AdOptionsView adOptionsView =
+                    new AdOptionsView(
+                            adChoicesContainer.getContext(),
+                            nativeAd.getFacebookNativeAd(),
+                            nativeAdLayout);
+            ViewGroup.LayoutParams layoutParams = adOptionsView.getLayoutParams();
             if (layoutParams instanceof RelativeLayout.LayoutParams) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     ((RelativeLayout.LayoutParams) layoutParams).addRule(RelativeLayout.ALIGN_PARENT_END);
@@ -97,7 +105,7 @@ public class FacebookAdRenderer implements MoPubAdRenderer<FacebookNative.Facebo
                     ((RelativeLayout.LayoutParams) layoutParams).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 }
             }
-            adChoicesContainer.addView(adChoicesView);
+            adChoicesContainer.addView(adOptionsView);
         }
     }
 

@@ -1,4 +1,8 @@
 ## Changelog
+  * 5.2.0.0
+    * Add `FacebookTemplateRenderer` class to render NativeAds using predefined layouts.
+    * Replace AdChoiceView by AdOptionsView.
+
   * 5.1.0.2
     * Fix an ANR when getting the bidding token by calling Facebook's `BidderTokenProvider.getBidderToken()` from a background thread.
 
