@@ -1,4 +1,7 @@
 ## Changelog
+  * 3.0.1.0
+    * This version of the adapters has been certified with Unity Ads 3.0.1.
+    
   * 3.0.0.1
     * **Note**: This version is only compatible with the 5.5.0+ release of the MoPub SDK.
     * Add the `UnityAdsAdapterConfiguration` class to: 
