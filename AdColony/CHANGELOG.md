@@ -1,4 +1,7 @@
 ## Changelog
+  * 3.3.8.0
+    * This version of the adapters has been certified with AdColony 3.3.8.
+
   * 3.3.7.1
     * **Note**: This version is only compatible with the 5.5.0+ release of the MoPub SDK.
     * Add the `AdColonyAdapterConfiguration` class to: 
