@@ -86,7 +86,7 @@ public class FacebookAdapterConfiguration extends BaseAdapterConfiguration {
                 @Override
                 public void run() {
                     String token = BidderTokenProvider.getBidderToken(context);
-                    if(token != null) {
+                    if (token != null) {
                         tokenReference.set(token);
                     }
                     isComputingToken.set(false);
